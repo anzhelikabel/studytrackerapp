@@ -1,6 +1,6 @@
-# my_app
+# Flutter App
 
-A new Flutter project.
+This is Study Tracker app developed in Flutter. App allows users to write and remember lectures/lessons. All the data is stored using locale Hive database. The app has a basic UI and functionality. It also enables users to switch between the light & dark mode. It's free for use, but mention the author (me/my github).
 
 ## Getting Started
 
