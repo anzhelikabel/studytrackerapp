@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'dart:ui';
 import 'homepage.dart';
 import 'hive_db.dart';
 
 void main() async {
   await HiveDB.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp( 
       home: HomePage(),
       debugShowCheckedModeBanner: false,
     );

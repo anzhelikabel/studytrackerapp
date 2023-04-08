@@ -1,6 +1,4 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive/hive.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/addschedulepage.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -11,13 +9,17 @@ import 'hive_db.dart';
 import 'model/schedule_model.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   bool isNotifying = false;
   bool isNightMode = false;
+  bool isChanged = false;
+  bool isUkrainian = false; // Default language is English
 
 
   @override
@@ -27,27 +29,26 @@ class _HomePageState extends State<HomePage> {
             scaffoldBackgroundColor: Colors.black,
           )
         : ThemeData.light().copyWith(
-          scaffoldBackgroundColor: Color(0xFFFCFAF2),
+          scaffoldBackgroundColor: const Color(0xFFFCFAF2),
         );
     return Theme(
       data: theme,
       child: Scaffold(
       body: ValueListenableBuilder(
         valueListenable: HiveDB.getScheduleBox().listenable(), 
-        builder: (BuildContext context, Box<Schedule> box, Widget ) {
+        builder: (BuildContext context, Box<Schedule> box, Widget? child) {
           if (box.values.isEmpty) {
-          return Center(child: Text('Почти відстежувати результат!'));
+          return Center(child: Text(isUkrainian ? 'Track your result' : 'Відстежуй результат'));
         }
           return Column(
             children: [
               Padding(
-      padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0, bottom: 20.0),
+      padding: const EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0, bottom: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "Розклад",
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          Text(isUkrainian ? 'Schedule' : 'Розклад',
+            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
           ),
             PopupMenuButton<String>(
   itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -57,8 +58,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           Icon(isNotifying ? Icons.notifications_active : Icons.notifications, 
             color: isNotifying ? Colors.orange : null,),
-          SizedBox(width: 8.0),
-          Text('Повідомлення'),
+          const SizedBox(width: 8.0),
+          Text(isUkrainian ? 'Notifications' : 'Повідомлення'),
         ],
       ),
     ),
@@ -68,11 +69,22 @@ class _HomePageState extends State<HomePage> {
         children: [
           Icon(Icons.nightlight_round,
             color: isNightMode ? Colors.orange : null,),
-          SizedBox(width: 8.0),
-          Text('Нічний режим'),
+          const SizedBox(width: 8.0),
+          Text(isUkrainian ? 'Night Mode' : 'Нічний режим'),
         ],
       ),
     ),
+    PopupMenuItem<String>(
+  value: 'languagesswitch',
+  child: Row(
+    children: [
+      Icon(Icons.language, color: isChanged ? Colors.orange : null,),
+      const SizedBox(width: 8.0),
+      Text(isUkrainian ? 'English' : 'Українська'),
+    ],
+  ),
+),
+
   ],
   onSelected: (String value) {
     // Handle popup menu item selection
@@ -89,14 +101,24 @@ class _HomePageState extends State<HomePage> {
         });
         // Code to toggle night mode
         break;
+       case 'languagesswitch':
+  setState(() {
+    isChanged = !isChanged;
+  });
+  if (!isChanged) {
+    _switchLanguage();
+  }
+  // Code to toggle language
+  break;
     }
-  },
-   onCanceled: () {
+   () {
     // Do nothing
-  },
-)
+  };
+
+        })
                   ],
                 ),
+
               ),
           Expanded (
           child: ListView.builder(
@@ -111,7 +133,7 @@ class _HomePageState extends State<HomePage> {
   background: Container(
     color: Colors.grey, // Change this to the desired background color
     alignment: Alignment.centerRight,
-    child: Padding(
+    child: const Padding(
       padding: EdgeInsets.only(right: 20.0),
       child: Icon(
         Icons.delete,
@@ -129,7 +151,7 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ScheduleDetailsPage(schedule: schedule!,  isNightMode: isNightMode),
+              ScheduleDetailsPage(schedule: schedule!,  isNightMode: isNightMode, isUkrainian: isUkrainian,),
         ),
       );
     },
@@ -140,16 +162,16 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             title: Text(
               schedule?.subject ?? '',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(top: 6.0),
               child: Text(
                 schedule?.time ?? '',
-                style: TextStyle(fontWeight: FontWeight.w200),
+                style: const TextStyle(fontWeight: FontWeight.w200),
               ),
             ),
-            trailing: Icon(Icons.chevron_right),
+            trailing: const Icon(Icons.chevron_right),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -158,7 +180,7 @@ class _HomePageState extends State<HomePage> {
             ),
               child: LinearPercentIndicator(
              lineHeight: 5,
-              barRadius: Radius.circular(50.0),
+              barRadius: const Radius.circular(50.0),
           percent: _calculatePercentComplete(schedule),
           progressColor: Colors.deepPurple,
           backgroundColor: Colors.deepPurple.shade100,
@@ -178,17 +200,17 @@ class _HomePageState extends State<HomePage> {
                height: 70.0,
     width: 70.0,
       child: FloatingActionButton(
-  backgroundColor: Color(0xEEEE9E8E),
-  child: Icon(Icons.add, size: 30.0,),
+  backgroundColor: const Color(0xEEEE9E8E),
   onPressed: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddSchedulePage(isNightMode: isNightMode)),
+      MaterialPageRoute(builder: (context) => AddSchedulePage(isNightMode: isNightMode, isUkrainian: isUkrainian,)),
     );
   },
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(16)
   ),
+  child: const Icon(Icons.add, size: 30.0,),
 ),
             )));
   }
@@ -202,4 +224,11 @@ class _HomePageState extends State<HomePage> {
   return addedLectures / totalLectures;
 }
 
+void _switchLanguage() {
+  setState(() {
+    // Toggle the language
+    isUkrainian = !isUkrainian;
+    // Update the locale based on the selected language
+  });
+}
 }

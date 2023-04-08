@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:hive/hive.dart';
 
 import 'model/schedule_model.dart';
@@ -8,21 +6,25 @@ import 'model/schedule_model.dart';
   class ScheduleDetailsPage extends StatefulWidget {
     final Schedule schedule;
     final bool isNightMode;
+    final bool isUkrainian;
 
-    const ScheduleDetailsPage({Key? key, required this.schedule,  required this.isNightMode}) : super(key: key);
+    const ScheduleDetailsPage({Key? key, required this.schedule,  required this.isNightMode, required this.isUkrainian}) : super(key: key);
 
     @override
-    _ScheduleDetailsPageState createState() => _ScheduleDetailsPageState();
+    ScheduleDetailsPageState createState() => ScheduleDetailsPageState();
   }
 
-  class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
+  class ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
     List<Lecture> _lectures = [];
+    bool isUkrainian = false; // Define the isUkrainian variable
 
-    @override
-    void initState() {
-      super.initState();
-      _lectures = widget.schedule.lectures ?? [];
-    }
+  @override
+  void initState() {
+    super.initState();
+    isUkrainian = widget.isUkrainian; // Initialize the isUkrainian variable
+    _lectures = widget.schedule.lectures ?? []; // Initialize the locale based on isUkrainian
+  }
+
 
     @override
     Widget build(BuildContext context) {
@@ -31,46 +33,46 @@ import 'model/schedule_model.dart';
             scaffoldBackgroundColor: Colors.black,
           )
         : ThemeData.light().copyWith(
-           scaffoldBackgroundColor: Color(0xFFFCFAF2),
+           scaffoldBackgroundColor: const Color(0xFFFCFAF2),
         );
 
     return Theme(
       data: theme,
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                    Padding(padding: EdgeInsets.only(bottom: 40.0),
+                    Padding(padding: const EdgeInsets.only(bottom: 40.0),
       child: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () {
           Navigator.pop(context);
         },
       ),
       ),
-              Padding(padding: EdgeInsets.only(bottom: 40.0),
+              Padding(padding: const EdgeInsets.only(bottom: 40.0),
       child: Text(
         widget.schedule.subject ?? '',
-        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
       ),
       ),
               Text(
-                'Час: ' 
+                isUkrainian ? 'Time: ' : 'Час: ' 
                 '${widget.schedule.time ?? ''}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
-                'Записи:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                isUkrainian ? 'Added notes' : 'Записи',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: _lectures.length,
                 itemBuilder: (BuildContext context, int index) {
                   Lecture? lecture = _lectures[index];
@@ -94,7 +96,7 @@ import 'model/schedule_model.dart';
         background: Container(
           color: Colors.grey, // Change this to the desired background color
           alignment: Alignment.centerRight,
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: Icon(
               Icons.delete,
@@ -105,18 +107,18 @@ import 'model/schedule_model.dart';
         child: Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
-    SizedBox(height: 1.0),
+    const SizedBox(height: 1.0),
     Text(
       lecture.name ?? '',
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
       ),
     ),
-    SizedBox(height: 4.0),
+    const SizedBox(height: 4.0),
     Text(
       lecture.notes ?? '',
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w300,
       ),
@@ -134,8 +136,7 @@ import 'model/schedule_model.dart';
                height: 70.0,
     width: 70.0,
       child: FloatingActionButton(
-              backgroundColor: Color(0xEEEE9E8E),
-              child: Icon(Icons.add, size: 30.0,),
+              backgroundColor: const Color(0xEEEE9E8E),
               onPressed: () {
                 _showAddLectureDialog(context);
               }, 
@@ -143,6 +144,7 @@ import 'model/schedule_model.dart';
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16)
             ),
+              child: const Icon(Icons.add, size: 30.0,),
             ),
 
    )));
@@ -150,41 +152,41 @@ import 'model/schedule_model.dart';
 
 
   void _showAddLectureDialog(BuildContext context) {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
 
   final ThemeData dialogDarkTheme = ThemeData.dark().copyWith(
     dialogBackgroundColor: Colors.grey[900],
-    textTheme: TextTheme(
-      headline6: TextStyle(
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 16.0,
         color: Colors.white,
       ),
     ),
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
     primary: Color(0xEEEE9E8E),
     onPrimary: Colors.white,
   ),
   );
   final ThemeData dialogLightTheme = ThemeData.light().copyWith(
-    dialogBackgroundColor: Color(0xFFFCFAF2),
-    textTheme: TextTheme(
-      headline6: TextStyle(
+    dialogBackgroundColor: const Color(0xFFFCFAF2),
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 16.0,
         color: Colors.black,
       ),
     ),
-     colorScheme: ColorScheme.light(
+     colorScheme: const ColorScheme.light(
     primary: Color(0xEEEE9E8E),
     onPrimary: Colors.white,
   ),
@@ -198,29 +200,27 @@ import 'model/schedule_model.dart';
       return Theme(
         data: dialogTheme,
         child: AlertDialog(
-          title: Text('Додай запис'),
+          title: Text(isUkrainian ? 'Add note' : 'Додай запис'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Назва'),
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: isUkrainian ? 'Name' : 'Назва'),
                 ),
                 TextField(
-                  controller: _notesController,
-                  decoration: InputDecoration(labelText: 'Замітки'),
+                  controller: notesController,
+                  decoration: InputDecoration(labelText: isUkrainian ? 'Notes' : 'Замітки'),
                 ),
               ],
             ),
           ),
           actions: [
            TextButton(
-  child: Text('Відмінити'),
   style: TextButton.styleFrom(
-    primary: Colors.grey[700],
-    textStyle: TextStyle(
+    foregroundColor: Colors.grey[700], textStyle: const TextStyle(
       fontSize: 15.0,
       fontWeight: FontWeight.w300,
     ),
@@ -228,13 +228,14 @@ import 'model/schedule_model.dart';
   onPressed: () {
     Navigator.pop(context);
   },
+  child: Text(isUkrainian ? 'Cancel' : 'Відмінити'),
 ),
             ElevatedButton(
-              child: Text('Додати'),
+              child: Text(isUkrainian ? 'Add' : 'Додати'),
               onPressed: () async {
                 final newLecture = Lecture(
-                  name: _nameController.text,
-                  notes: _notesController.text,
+                  name: nameController.text,
+                  notes: notesController.text,
                 );
 
                 setState(() {
@@ -251,6 +252,7 @@ import 'model/schedule_model.dart';
 
                 await box.putAt(index, updatedSchedule);
 
+                // ignore: use_build_context_synchronously
                 Navigator.of(context).pop();
               },
             ),

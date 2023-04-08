@@ -5,18 +5,27 @@ import 'model/schedule_model.dart';
 
 class AddSchedulePage extends StatefulWidget {
   final bool isNightMode;
+  final bool isUkrainian;
 
-  const AddSchedulePage({Key? key, required this.isNightMode}) : super(key: key);
+  const AddSchedulePage({Key? key, required this.isNightMode, required this.isUkrainian}) : super(key: key);
 
   @override
-  _AddSchedulePageState createState() => _AddSchedulePageState();
+  AddSchedulePageState createState() => AddSchedulePageState();
 }
 
-class _AddSchedulePageState extends State<AddSchedulePage> {
+class AddSchedulePageState extends State<AddSchedulePage> {
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-  List<Lecture> _lectures = [];
-  bool _isInputSelected = false;
+  final List<Lecture> _lectures = [];
+  bool _isInputSelected = false; 
+  bool isUkrainian = false; // Define the isUkrainian variable
+
+  @override
+  void initState() {
+    super.initState();
+    isUkrainian = widget.isUkrainian; // Initialize the isUkrainian variable
+// Initialize the locale based on isUkrainian
+  }
 
   @override
 Widget build(BuildContext context) {
@@ -25,32 +34,32 @@ Widget build(BuildContext context) {
         scaffoldBackgroundColor: Colors.black
       )
     : ThemeData.light().copyWith(
-        scaffoldBackgroundColor: Color(0xFFFCFAF2),
+        scaffoldBackgroundColor: const Color(0xFFFCFAF2),
       );
   return Theme(
     data: theme,
     child: Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(top: 50.0, left: 30.0, right: 30.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
    Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Padding(padding: EdgeInsets.only(bottom: 40.0),
+      Padding(padding: const EdgeInsets.only(bottom: 40.0),
       child: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () {
           Navigator.pop(context);
         },
       ),
       ),
-      Padding(padding: EdgeInsets.only(bottom: 40.0),
+      Padding(padding: const EdgeInsets.only(bottom: 40.0),
       child: Text(
-        "Додай розклад",
-        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+        isUkrainian ? 'Add schedule' : 'Додай розклад',
+        style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
       ),
       ),
     ],
@@ -58,12 +67,12 @@ Widget build(BuildContext context) {
               TextField(
   controller: _subjectController,
   decoration: InputDecoration(
-    hintText: 'Предмет',
-    focusedBorder: UnderlineInputBorder(
+    hintText: isUkrainian ? 'Subject' : 'Предмет',
+    focusedBorder: const UnderlineInputBorder(
       borderSide: BorderSide(color: Color(0xEEEE9E8E)),
     ),
   ),
-  cursorColor: Color(0xEEEE9E8E),
+  cursorColor: const Color(0xEEEE9E8E),
                 onTap: () {
                   // Set the flag to true when subject field is selected
                   setState(() {
@@ -80,12 +89,12 @@ Widget build(BuildContext context) {
 TextField(
   controller: _timeController,
   decoration: InputDecoration(
-    hintText: 'Час',
-    focusedBorder: UnderlineInputBorder(
+    hintText: isUkrainian ? 'Time' : 'Час',
+    focusedBorder: const UnderlineInputBorder(
       borderSide: BorderSide(color: Color(0xEEEE9E8E)),
     ),
   ),
-  cursorColor: Color(0xEEEE9E8E),
+  cursorColor: const Color(0xEEEE9E8E),
   onTap: () {
     // Set the flag to true when time field is selected
     setState(() {
@@ -99,12 +108,12 @@ TextField(
     });
   },
 ),
-              SizedBox(height: 16.0),
-              Text('Записи', style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 16.0),
+              Text(isUkrainian ? 'Added notes' : 'Записи', style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500)),
+              const SizedBox(height: 8.0),
               ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: _lectures.length,
                 itemBuilder: (BuildContext context, int index) {
                   Lecture lecture = _lectures[index];
@@ -118,7 +127,7 @@ TextField(
         background: Container(
           color: Colors.grey, // Change this to the desired background color
           alignment: Alignment.centerRight,
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: Icon(
               Icons.delete,
@@ -130,18 +139,18 @@ TextField(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
     // Divider(color: Colors.deepPurple.shade100,),
-    SizedBox(height: 15.0),
+    const SizedBox(height: 15.0),
     Text(
       lecture.name ?? '',
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.bold,
       ),
     ),
-    SizedBox(height: 4.0),
+    const SizedBox(height: 4.0),
     Text(
       lecture.notes ?? '',
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w300,
       ),
@@ -169,26 +178,26 @@ TextField(
                   ),
                 ),
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                  EdgeInsets.symmetric(vertical: 16.0, horizontal: 60.0),
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 60.0),
                 ),
               ),
               onPressed: () {
                 _showAddLectureDialog(context);
               },
               child: Text(
-                'Запис',
-                style: TextStyle(
+                isUkrainian ? 'Note' : 'Запис',
+                style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(235, 22, 22, 35), // Custom text color
                 ),
               ),
             ),
-            SizedBox(width: 8.0), // Add padding between the buttons
+            const SizedBox(width: 8.0), // Add padding between the buttons
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromARGB(235, 22, 22, 35),
+                  const Color.fromARGB(235, 22, 22, 35),
                 ),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
@@ -196,7 +205,7 @@ TextField(
                   ),
                 ),
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                  EdgeInsets.symmetric(vertical: 16.0, horizontal: 50.0),
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 50.0),
                 ),
               ),
               onPressed: () {
@@ -204,8 +213,8 @@ TextField(
                 Navigator.pop(context);
               },
               child: Text(
-                'Розклад',
-                style: TextStyle(
+                isUkrainian ? 'Add' : 'Додати',
+                style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -220,40 +229,40 @@ TextField(
   }
 
   void _showAddLectureDialog(BuildContext context) {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _lectureNotesController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController lectureNotesController = TextEditingController();
   final ThemeData dialogDarkTheme = ThemeData.dark().copyWith(
     dialogBackgroundColor: Colors.grey[900],
-    textTheme: TextTheme(
-      headline6: TextStyle(
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 16.0,
         color: Colors.white,
       ),
     ),
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
     primary: Color(0xEEEE9E8E),
     onPrimary: Colors.white,
   ),
   );
   final ThemeData dialogLightTheme = ThemeData.light().copyWith(
-    dialogBackgroundColor: Color(0xFFFCFAF2),
-    textTheme: TextTheme(
-      headline6: TextStyle(
+    dialogBackgroundColor: const Color(0xFFFCFAF2),
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 16.0,
         color: Colors.black,
       ),
     ),
-     colorScheme: ColorScheme.light(
+     colorScheme: const ColorScheme.light(
     primary: Color(0xEEEE9E8E),
     onPrimary: Colors.white,
   ),
@@ -267,29 +276,27 @@ TextField(
       return Theme(
         data: dialogTheme,
         child: AlertDialog(
-          title: Text('Додай запис'),
+          title: Text(isUkrainian ? 'Add note' : 'Додати запис'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Назва'),
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: isUkrainian ? 'Name' : 'Назва'),
                 ),
                 TextField(
-                  controller: _lectureNotesController,
-                  decoration: InputDecoration(labelText: 'Замітки'),
+                  controller: lectureNotesController,
+                  decoration: InputDecoration(labelText: isUkrainian ? 'Note' : 'Замітки'),
                 ),
               ],
             ),
           ),
           actions: [
            TextButton(
-  child: Text('Відмінити'),
   style: TextButton.styleFrom(
-    primary: Colors.grey[700],
-    textStyle: TextStyle(
+    foregroundColor: Colors.grey[700], textStyle: const TextStyle(
       fontSize: 15.0,
       fontWeight: FontWeight.w300,
     ),
@@ -297,14 +304,15 @@ TextField(
   onPressed: () {
     Navigator.pop(context);
   },
+  child: Text(isUkrainian ? 'Cancel' : 'Відмінити'),
 ),
             ElevatedButton(
-              child: Text('Додати'),
+              child: Text(isUkrainian ? 'Add' : 'Додати'),
               onPressed: () {
                 setState(() {
                   _lectures.add(Lecture(
-                    name: _nameController.text,
-                    notes: _lectureNotesController.text,
+                    name: nameController.text,
+                    notes: lectureNotesController.text,
                   ));
                 });
                 Navigator.pop(context);
@@ -316,6 +324,7 @@ TextField(
     },
   );
 }
+
 
   void _saveSchedule() {
   String subject = _subjectController.text;

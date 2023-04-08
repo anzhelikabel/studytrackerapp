@@ -30,6 +30,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-dependencies {
-        implementation 'com.android.support:multidex:1.0.3'
-}
+// dependencies {
+//         implementation 'com.android.support:multidex:1.0.3'
+// }
