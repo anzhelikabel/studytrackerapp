@@ -24,14 +24,13 @@ class AddSchedulePageState extends State<AddSchedulePage> {
   void initState() {
     super.initState();
     isUkrainian = widget.isUkrainian; // Initialize the isUkrainian variable
-// Initialize the locale based on isUkrainian
   }
 
   @override
 Widget build(BuildContext context) {
   final ThemeData theme = widget.isNightMode
     ? ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black
+        scaffoldBackgroundColor: Colors.black,
       )
     : ThemeData.light().copyWith(
         scaffoldBackgroundColor: const Color(0xFFFCFAF2),
@@ -180,6 +179,14 @@ TextField(
                 padding: MaterialStateProperty.all<EdgeInsets>(
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 60.0),
                 ),
+                 foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.pressed)) {
+                  return Colors.white; // Change to the desired color when pressed
+                 }
+                return widget.isNightMode ? Colors.white : const Color.fromARGB(235, 22, 22, 35); // Change to the desired colors for night mode and normal mode
+                  },
+                ),
               ),
               onPressed: () {
                 _showAddLectureDialog(context);
@@ -189,7 +196,6 @@ TextField(
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(235, 22, 22, 35), // Custom text color
                 ),
               ),
             ),
@@ -285,10 +291,34 @@ TextField(
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(labelText: isUkrainian ? 'Name' : 'Назва'),
+                   onTap: () {
+    // Set the flag to true when time field is selected
+    setState(() {
+      _isInputSelected = true;
+    });
+  },
+  onSubmitted: (value) {
+    // Set the flag to false when time field loses focus
+    setState(() {
+      _isInputSelected = false;
+    });
+  },
                 ),
                 TextField(
                   controller: lectureNotesController,
                   decoration: InputDecoration(labelText: isUkrainian ? 'Note' : 'Замітки'),
+                   onTap: () {
+    // Set the flag to true when time field is selected
+    setState(() {
+      _isInputSelected = true;
+    });
+  },
+  onSubmitted: (value) {
+    // Set the flag to false when time field loses focus
+    setState(() {
+      _isInputSelected = false;
+    });
+  },
                 ),
               ],
             ),
