@@ -70,64 +70,74 @@ import 'model/schedule_model.dart';
               ),
               const SizedBox(height: 8.0),
               Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: _lectures.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Lecture? lecture = _lectures[index];
-                        return Dismissible(
-        key: UniqueKey(),
-        onDismissed: (direction) async {
-          setState(() {
-            _lectures.removeAt(index);
-          });
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: _lectures.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Lecture? lecture = _lectures[index];
+                    return Dismissible(
+                      key: UniqueKey(),
+                      onDismissed: (direction) async {
+                        setState(() {
+                          _lectures.removeAt(index);
+                        });
 
-          final box = await Hive.openBox<Schedule>('scheduleBox');
-          final scheduleIndex = box.values.toList().indexOf(widget.schedule);
-          final updatedSchedule = Schedule(
-            subject: widget.schedule.subject,
-            time: widget.schedule.time,
-            lectures: _lectures,
-          );
+                        final box = await Hive.openBox<Schedule>('scheduleBox');
+                        final scheduleIndex = box.values.toList().indexOf(widget.schedule);
+                        final updatedSchedule = Schedule(
+                          subject: widget.schedule.subject,
+                          time: widget.schedule.time,
+                          lectures: _lectures,
+                        );
 
-          await box.putAt(scheduleIndex, updatedSchedule);
-        },
-        background: Container(
-          color: Colors.grey, // Change this to the desired background color
-          alignment: Alignment.centerRight,
-          child: const Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-        ), 
-        child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const SizedBox(height: 1.0),
-    Text(
-      lecture.name ?? '',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    const SizedBox(height: 4.0),
-    Text(
-      lecture.notes ?? '',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w300,
-      ),
-    ), // add divider
-  ],
-)
-);
-                },
-              ),
+                        await box.putAt(scheduleIndex, updatedSchedule);
+                      },
+                      background: Container(
+                        color: Colors.grey,
+                        alignment: Alignment.centerRight,
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 1.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 3.0),
+                            child: Text(
+                              lecture.name ?? '',
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                              lecture.notes ?? '',
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 1.0,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               )
             ],
           ),
@@ -220,7 +230,8 @@ import 'model/schedule_model.dart';
           actions: [
            TextButton(
   style: TextButton.styleFrom(
-    foregroundColor: Colors.grey[700], textStyle: const TextStyle(
+    foregroundColor: Colors.grey[700],
+    textStyle: const TextStyle(
       fontSize: 15.0,
       fontWeight: FontWeight.w300,
     ),

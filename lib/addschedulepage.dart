@@ -138,21 +138,31 @@ TextField(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
     // Divider(color: Colors.deepPurple.shade100,),
-    const SizedBox(height: 15.0),
-    Text(
-      lecture.name ?? '',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.bold,
+    const SizedBox(height: 1.0),
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Text(
+        lecture.name ?? '',
+        style: const TextStyle(
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     ),
     const SizedBox(height: 4.0),
-    Text(
-      lecture.notes ?? '',
-      style: const TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w300,
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Text(
+        lecture.notes ?? '',
+        style: const TextStyle(
+          fontSize: 16.0,
+          fontWeight: FontWeight.w300,
+        ),
       ),
+    ),
+    Container(
+      height: 1.0,
+      color: Colors.grey,
     ), // add divider
   ],
 )
@@ -291,34 +301,10 @@ TextField(
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(labelText: isUkrainian ? 'Name' : 'Назва'),
-                   onTap: () {
-    // Set the flag to true when time field is selected
-    setState(() {
-      _isInputSelected = true;
-    });
-  },
-  onSubmitted: (value) {
-    // Set the flag to false when time field loses focus
-    setState(() {
-      _isInputSelected = false;
-    });
-  },
                 ),
                 TextField(
                   controller: lectureNotesController,
                   decoration: InputDecoration(labelText: isUkrainian ? 'Note' : 'Замітки'),
-                   onTap: () {
-    // Set the flag to true when time field is selected
-    setState(() {
-      _isInputSelected = true;
-    });
-  },
-  onSubmitted: (value) {
-    // Set the flag to false when time field loses focus
-    setState(() {
-      _isInputSelected = false;
-    });
-  },
                 ),
               ],
             ),

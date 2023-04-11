@@ -38,7 +38,12 @@ class HomePageState extends State<HomePage> {
         valueListenable: HiveDB.getScheduleBox().listenable(), 
         builder: (BuildContext context, Box<Schedule> box, Widget? child) {
           if (box.values.isEmpty) {
-          return Center(child: Text(isUkrainian ? 'Track your result' : 'Відстежуй результат'));
+          return const Center(child: Text('Відстежуй результат!',
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold),
+          ),
+          );
         }
           return Column(
             children: [
@@ -101,15 +106,16 @@ class HomePageState extends State<HomePage> {
         });
         // Code to toggle night mode
         break;
-       case 'languagesswitch':
-  setState(() {
-    isChanged = !isChanged;
-  });
-  if (!isChanged) {
-    _switchLanguage();
-  }
-  // Code to toggle language
-  break;
+      case 'languagesswitch':
+        setState(() {
+          isChanged = !isChanged;
+          if (isChanged) {
+            _switchLanguage();
+          } else if(!isChanged) {
+            _switchLanguage();
+          }
+        });
+        break;
     }
    () {
     // Do nothing
